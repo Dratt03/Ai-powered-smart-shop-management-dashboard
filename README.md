@@ -15,6 +15,14 @@ Built with **FastAPI**, **PostgreSQL**, **SQLAlchemy**, and Vanilla **HTML/CSS/J
 
 ---
 
+## Screenshots
+
+![Screenshot1](<Screenshot (2)-1.png>)
+![Screenshot2](<Screenshot (3)-1.png>)
+![Screenshot3](<Screenshot (4)-1.png>)
+
+---
+
 ## Quick Start with Docker (Recommended)
 
 Run the entire application (FastAPI backend + PostgreSQL database) with a single command:
