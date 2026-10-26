@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Smart Shop Management Dashboard</title>
+    <link rel="stylesheet" href="style.css?v=8">
+</head>
+
+<body>
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+        <div class="nav-brand">
+            <h2>Shop Management Dashboard</h2>
+        </div>
+        <nav class="nav-links">
+            <button id="tab-btn-dashboard" class="nav-item active" onclick="switchTab('dashboard')">Dashboard</button>
+            <button id="tab-btn-stock" class="nav-item" onclick="switchTab('stock')">Stock</button>
+            <button id="tab-btn-sales" class="nav-item" onclick="switchTab('sales')">Sales</button>
+        </nav>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container">
+
+        <!-- TAB 1: SYSTEM DASHBOARD & REPORTS RECAP -->
+        <section id="tab-dashboard" class="tab-content active">
+            <!-- Store Header with Title and Period Switcher -->
+            <div class="dashboard-header-card">
+                <div>
+                    <h1>Store Overview &amp; Reports</h1>
+                    <p class="section-subtitle">Real-time store performance, revenue recap, sales analytics, and stock
+                        health</p>
+                </div>
+                <div class="dashboard-header-controls">
+                    <div class="period-toggle-group">
+                        <button type="button" class="period-btn active" data-period="today"
+                            onclick="changeRecapPeriod('today')">Today</button>
+                        <button type="button" class="period-btn" data-period="7days"
+                            onclick="changeRecapPeriod('7days')">7 Days</button>
+                        <button type="button" class="period-btn" data-period="30days"
+                            onclick="changeRecapPeriod('30days')">30 Days</button>
+                        <button type="button" class="period-btn" data-period="all"
+                            onclick="changeRecapPeriod('all')">All Time</button>
+                    </div>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="loadDashboardReports()"
+                        title="Refresh latest data">Refresh Recap</button>
+                </div>
+            </div>
+
+            <!-- Metric KPI Summary Cards -->
+            <div class="kpi-grid">
+                <!-- Revenue Card -->
+                <div class="card kpi-card">
+                    <div class="kpi-content">
+                        <span id="kpi-revenue-label" class="kpi-label">Today's Revenue</span>
+                        <div class="kpi-value" id="kpi-revenue">₹0.00</div>
+                        <div class="kpi-subtext">All-Time: <strong id="kpi-revenue-alltime">₹0.00</strong></div>
+                    </div>
+                </div>
+
+                <!-- Sales Count Card -->
+                <div class="card kpi-card">
+                    <div class="kpi-content">
+                        <span id="kpi-sales-label" class="kpi-label">Today's Bills</span>
+                        <div class="kpi-value" id="kpi-sales-count">0</div>
+                        <div class="kpi-subtext">All-Time: <strong id="kpi-sales-alltime">0</strong> orders</div>
+                    </div>
+                </div>
+
+
+
+                <!-- Inventory Value Card -->
+                <div class="card kpi-card">
+                    <div class="kpi-content">
+                        <span class="kpi-label">Inventory Valuation</span>
+                        <div class="kpi-value" id="kpi-inventory-val">₹0.00</div>
+                        <div class="kpi-subtext"><strong id="kpi-inventory-items">0</strong> units (<span
+                                id="kpi-products-count">0</span> products)</div>
+                    </div>
+                </div>
+
+                <!-- Stock Alert Card -->
+                <div class="card kpi-card">
+                    <div class="kpi-content">
+                        <span class="kpi-label">Low Stock Alerts</span>
+                        <div class="kpi-value" id="kpi-low-stock-count" style="color: var(--danger-color);">0</div>
+                        <div class="kpi-subtext"><strong id="kpi-out-stock-count">0</strong> out of stock</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Two-Column Reports & Recap Section -->
+            <div class="recap-grid">
+                <!-- Left Column: Top Selling Products & Recent Sales -->
+                <div class="recap-col">
+                    <!-- Top Selling Products -->
+                    <div class="card">
+                        <div class="card-header-flex">
+                            <div>
+                                <h3 style="margin-bottom: 0.2rem;">Top Selling Products</h3>
+                                <p class="card-desc" style="margin-bottom: 0.5rem;" id="recap-top-products-desc">Best
+                                    performers for selected period</p>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Product Name</th>
+                                        <th style="text-align: right;">Units Sold</th>
+                                        <th style="text-align: right;">Revenue</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="top-products-table-body">
+                                    <tr>
+                                        <td colspan="4"
+                                            style="text-align: center; color: var(--text-muted); padding: 1.5rem;">
+                                            Loading top products...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Recent Sales Activity -->
+                    <div class="card">
+                        <div class="card-header-flex">
+                            <div>
+                                <h3 style="margin-bottom: 0.2rem;">Recent Sales Activity</h3>
+                                <p class="card-desc" style="margin-bottom: 0.5rem;">Latest customer purchases recorded
+                                </p>
+                            </div>
+                            <button class="btn btn-secondary btn-sm" onclick="switchTab('sales')">View POS</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Receipt #</th>
+                                        <th>Time</th>
+                                        <th>Items</th>
+                                        <th style="text-align: right;">Total</th>
+                                        <th style="text-align: center;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashboard-recent-sales-body">
+                                    <tr>
+                                        <td colspan="5"
+                                            style="text-align: center; color: var(--text-muted); padding: 1.5rem;">
+                                            Loading recent sales...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Stock Health / Restock Needed & Category Breakdown -->
+                <div class="recap-col">
+                    <!-- Low Stock Warnings / Restock Alert -->
+                    <div class="card">
+                        <div class="card-header-flex">
+                            <div>
+                                <h3 style="margin-bottom: 0.2rem;">Restock Needed</h3>
+                                <p class="card-desc" style="margin-bottom: 0.5rem;">Products at or below their alert
+                                    threshold</p>
+                            </div>
+                            <button class="btn btn-secondary btn-sm" onclick="switchTab('stock')">All Stock</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Product</th>
+                                        <th>Stock</th>
+                                        <th style="text-align: center;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="low-stock-table-body">
+                                    <tr>
+                                        <td colspan="4"
+                                            style="text-align: center; color: var(--text-muted); padding: 1.5rem;">
+                                            Checking inventory levels...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Category Breakdown -->
+                    <div class="card">
+                        <h3 style="margin-bottom: 0.2rem;">Inventory by Category</h3>
+                        <p class="card-desc" style="margin-bottom: 0.75rem;">Product distribution and stock availability
+                        </p>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th style="text-align: center;">Products</th>
+                                        <th style="text-align: right;">Units in Stock</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="category-table-body">
+                                    <tr>
+                                        <td colspan="3"
+                                            style="text-align: center; color: var(--text-muted); padding: 1.5rem;">
+                                            Loading categories...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Google Gemini AI Configuration (Replaces System & Server Health) -->
+            <div class="gemini-config-section">
+                <div class="card gemini-config-card">
+                    <div class="card-header-flex" style="margin-bottom: 0.5rem;">
+                        <div>
+                            <h3 style="margin-bottom: 0.25rem;">Google Gemini AI Configuration</h3>
+                            <p class="card-desc" style="margin-bottom: 0;">
+                                Get a free API key at: <a href="https://aistudio.google.com/app/apikey" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="link-external">https://aistudio.google.com/app/apikey</a>
+                            </p>
+                        </div>
+                        <span id="gemini-config-status-badge" class="badge badge-warning">Checking...</span>
+                    </div>
+
+                    <form id="gemini-config-form" class="gemini-config-form" onsubmit="handleSaveGeminiKey(event)">
+                        <div class="gemini-input-group">
+                            <div class="gemini-input-wrapper">
+                                <input type="password" id="gemini-api-key-input"
+                                    placeholder="Paste GEMINI_API_KEY here (e.g. AIzaSy... or AQ.Ab8...)"
+                                    autocomplete="off">
+                            </div>
+                            <div class="gemini-btn-group">
+                                <button type="submit" id="save-gemini-key-btn" class="btn btn-primary btn-sm">
+                                    Save
+                                </button>
+                                <button type="button" id="test-gemini-key-btn" class="btn btn-secondary btn-sm"
+                                    onclick="handleTestGeminiKey()">
+                                    Test Connection
+                                </button>
+                            </div>
+                        </div>
+                        <div id="gemini-config-alert" class="gemini-config-alert" style="display: none;"></div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: MERGED STOCK MANAGEMENT -->
+        <section id="tab-stock" class="tab-content">
+            <!-- Header with Title & Action Button -->
+            <div class="section-header">
+                <div>
+                    <h2>Stock Management</h2>
+                    <p class="section-subtitle">Manage products, monitor stock quantities, and adjust inventory</p>
+                </div>
+                <button class="btn btn-primary" onclick="openAddProductModal()">+ Add New Product</button>
+            </div>
+
+            <!-- Search Bar & Filters -->
+            <div class="filter-bar">
+                <input type="text" id="product-search-input" placeholder="Search by code or name... (e.g. CC)"
+                    oninput="handleProductSearch()">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="show-archived-checkbox" onchange="loadProducts()">
+                    Show Archived Products Only
+                </label>
+            </div>
+
+            <!-- Products & Stock Table Card -->
+            <div class="card table-card">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Product Name</th>
+                            <th>Category</th>
+                            <th>Selling Price</th>
+                            <th>Stock</th>
+                            <th>Unit</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="products-table-body">
+                        <tr>
+                            <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 2rem;">Loading
+                                stock...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- TAB 3: SALES MANAGEMENT (Phase 4) -->
+        <section id="tab-sales" class="tab-content">
+            <div class="section-header">
+                <div>
+                    <h2>Sales Management (Checkout)</h2>
+                    <p class="section-subtitle">Quickly ring up products using short codes and record customer sales</p>
+                </div>
+            </div>
+
+            <!-- Notification Banner for Completed Sale / Alerts -->
+            <div id="sale-alert-banner" class="sale-banner" style="display: none;"></div>
+
+            <!-- Two-Column POS Layout -->
+            <div class="sales-grid">
+                <!-- Column 1: Add Item Card -->
+                <div class="card">
+                    <h3 style="margin-bottom: 0.35rem;">Add Product to Bill</h3>
+                    <p class="card-desc" style="margin-bottom: 1.25rem;">Type short code or product name to look up
+                        instantly</p>
+
+                    <form id="sales-add-item-form" onsubmit="handleAddItemToCart(event)">
+                        <div class="form-group">
+                            <label for="sale-code-input">Product Code or Name *</label>
+                            <input type="text" id="sale-code-input" placeholder="Type code (e.g. CC) or search..."
+                                list="sales-products-datalist" autocomplete="off" required
+                                oninput="handleSaleCodeLookup()" style="text-transform: uppercase;">
+                            <datalist id="sales-products-datalist"></datalist>
+                            <small class="form-help">Enter code like CC or pick from dropdown suggestion.</small>
+                        </div>
+
+                        <!-- Product Live Lookup Preview -->
+                        <div id="sale-lookup-preview" class="sale-preview-box" style="display: none;">
+                            <div class="sale-preview-header">
+                                <strong id="sale-preview-name">-</strong>
+                                <span id="sale-preview-price" class="sale-preview-price">₹0.00</span>
+                            </div>
+                            <div class="sale-preview-details">
+                                <span>Code: <strong id="sale-preview-code">-</strong></span>
+                                <span>In Stock: <strong id="sale-preview-stock">-</strong></span>
+                                <span>Category: <strong id="sale-preview-cat">-</strong></span>
+                            </div>
+                        </div>
+
+                        <div class="form-row" style="margin-top: 1rem;">
+                            <div class="form-group">
+                                <label for="sale-qty-input">Quantity *</label>
+                                <input type="number" id="sale-qty-input" min="1" value="1" required
+                                    oninput="updateLineTotalPreview()">
+                            </div>
+                            <div class="form-group">
+                                <label>Line Total</label>
+                                <input type="text" id="sale-line-total-preview" readonly value="₹0.00"
+                                    style="background-color: #f8fafc; font-weight: 600;">
+                            </div>
+                        </div>
+
+                        <div id="sale-add-error" class="form-error-msg" style="display: none; margin-top: 0.75rem;">
+                        </div>
+
+                        <button type="submit" id="sale-add-btn" class="btn btn-primary"
+                            style="width: 100%; margin-top: 0.75rem;" disabled>
+                            Add to Current Bill
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Column 2: Current Bill / Cart Card -->
+                <div class="card bill-card">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                        <div>
+                            <h3 style="margin-bottom: 0.2rem;">Current Customer Bill</h3>
+                            <span id="bill-item-count" style="font-size: 0.85rem; color: var(--text-muted);">0 items in
+                                bill</span>
+                        </div>
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="clearCart()" id="clear-cart-btn"
+                            style="display: none;">
+                            Clear Bill
+                        </button>
+                    </div>
+
+                    <div class="bill-table-wrapper">
+                        <table class="data-table" id="cart-table">
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Qty</th>
+                                    <th>Total</th>
+                                    <th style="text-align: center;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cart-table-body">
+                                <tr>
+                                    <td colspan="6"
+                                        style="text-align: center; color: var(--text-muted); padding: 2.5rem 1rem;">
+                                        Your customer bill is empty.<br>
+                                        <span style="font-size: 0.85rem;">Enter product codes on the left to add
+                                            items.</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Grand Total Banner -->
+                    <div class="bill-summary">
+                        <div class="bill-total-row">
+                            <span>Total Amount to Pay:</span>
+                            <span id="bill-grand-total" class="bill-total-amount">₹0.00</span>
+                        </div>
+                        <button type="button" id="complete-sale-btn" class="btn btn-success-lg"
+                            onclick="completeSaleTransaction()" disabled>
+                            Complete Sale &amp; Record Receipt
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Sales History -->
+            <div class="card" style="margin-top: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <div>
+                        <h3>Recent Sales History</h3>
+                        <p class="card-desc">Receipts recorded and inventory deducted automatically</p>
+                    </div>
+                    <button class="btn btn-secondary btn-sm" onclick="loadSalesHistory()">Refresh Sales</button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Receipt #</th>
+                                <th>Date &amp; Time</th>
+                                <th>Items Sold</th>
+                                <th>Grand Total</th>
+                                <th style="text-align: center;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sales-history-table-body">
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">
+                                    Loading sales history...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+
+
+
+    </main>
+
+    <!-- Modal 1: Add / Edit Product -->
+    <div id="product-modal" class="modal-backdrop" style="display: none;">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="modal-title">Add New Product</h3>
+                <button class="modal-close" onclick="closeProductModal()">&times;</button>
+            </div>
+            <form id="product-form" onsubmit="handleProductFormSubmit(event)">
+                <input type="hidden" id="form-product-id">
+
+                <div class="form-group">
+                    <label for="form-name">Product Name *</label>
+                    <input type="text" id="form-name" required placeholder="e.g. Fresh Milk 1L"
+                        oninput="handleNameInputForCodeSuggestion()">
+                    <small class="form-help">A short code is suggested automatically below.</small>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="form-code">Short Product Code *</label>
+                        <input type="text" id="form-code" required placeholder="e.g. CC"
+                            style="text-transform: uppercase;">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="form-category-select">Category *</label>
+                        <select id="form-category-select" required onchange="handleCategorySelectChange()">
+                            <option value="" disabled selected>-- Select Category --</option>
+                            <option value="Beverages">Beverages</option>
+                            <option value="Snacks & Chips">Snacks & Chips</option>
+                            <option value="Dairy">Dairy</option>
+                            <option value="Bakery & Biscuits">Bakery & Biscuits</option>
+                            <option value="Groceries & Staples">Groceries & Staples</option>
+                            <option value="Chocolates & Sweets">Chocolates & Sweets</option>
+                            <option value="Tea & Coffee">Tea & Coffee</option>
+                            <option value="Personal Care">Personal Care</option>
+                            <option value="Cleaning & Household">Cleaning & Household</option>
+                            <option value="Other">Other (Type Custom)</option>
+                        </select>
+                        <input type="text" id="form-category-custom" placeholder="Type custom category..."
+                            style="display: none; margin-top: 0.4rem;">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="form-selling-price">Selling Price (₹) *</label>
+                        <input type="number" id="form-selling-price" step="0.5" min="0" required placeholder="40.00">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="form-purchase-cost">Purchase Cost (₹)</label>
+                        <input type="number" id="form-purchase-cost" step="0.5" min="0" placeholder="30.00">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="form-stock">Opening Stock Quantity *</label>
+                        <input type="number" id="form-stock" min="0" required placeholder="50">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="form-threshold">Low-Stock Alert Level</label>
+                        <input type="number" id="form-threshold" min="1" value="10" placeholder="10">
+                        <small class="form-help">Warn when stock falls to this number or below.</small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="form-unit-select">Unit of Measure *</label>
+                    <select id="form-unit-select" required onchange="handleUnitSelectChange()">
+                        <option value="" disabled selected>-- Select Unit --</option>
+                        <option value="bottle">bottle</option>
+                        <option value="packet">packet</option>
+                        <option value="piece">piece</option>
+                        <option value="can">can</option>
+                        <option value="kg">kg</option>
+                        <option value="gram">gram</option>
+                        <option value="litre">litre</option>
+                        <option value="ml">ml</option>
+                        <option value="box">box</option>
+                        <option value="bar">bar</option>
+                        <option value="Other">Other (Type Custom)</option>
+                    </select>
+                    <input type="text" id="form-unit-custom" placeholder="Type custom unit (e.g. pouch, roll)..."
+                        style="display: none; margin-top: 0.4rem;">
+                </div>
+
+                <div id="form-error" class="form-error-msg" style="display: none;"></div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeProductModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 2: Adjust Stock (+ Stock next to Edit) -->
+    <div id="stock-modal" class="modal-backdrop" style="display: none;">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="stock-modal-title">Adjust Stock</h3>
+                <button class="modal-close" onclick="closeStockModal()">&times;</button>
+            </div>
+            <form id="stock-form" onsubmit="handleStockFormSubmit(event)">
+                <input type="hidden" id="stock-product-id">
+
+                <div style="background-color:#f1f5f9; padding:0.75rem 1rem; border-radius:8px; margin-bottom:1.25rem;">
+                    <div>Product: <strong id="stock-product-name">-</strong> (<span id="stock-product-code">-</span>)
+                    </div>
+                    <div>Current Stock: <strong id="stock-product-current"
+                            style="color:var(--primary-color);">-</strong></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Action Type *</label>
+                    <div style="display:flex; gap:1.5rem; margin-top:0.25rem;">
+                        <label style="display:flex; align-items:center; gap:0.4rem; cursor:pointer;">
+                            <input type="radio" name="stock-action-type" value="add" checked
+                                onchange="updateStockModalLabels()">
+                            Add Incoming Stock (Restock)
+                        </label>
+                        <label style="display:flex; align-items:center; gap:0.4rem; cursor:pointer;">
+                            <input type="radio" name="stock-action-type" value="remove"
+                                onchange="updateStockModalLabels()">
+                            Remove (Damaged / Expired)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label id="stock-amount-label" for="stock-amount">Quantity to Add *</label>
+                    <input type="number" id="stock-amount" min="1" required placeholder="e.g. 20">
+                </div>
+
+                <div class="form-group">
+                    <label for="stock-reason">Reason *</label>
+                    <input type="text" id="stock-reason" required
+                        placeholder="e.g. Supplier delivery or Damaged bottle">
+                </div>
+
+                <div id="stock-error" class="form-error-msg" style="display: none;"></div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeStockModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="stock-submit-btn">Update Stock</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 3: Confirmation Dialog (Archive / Unarchive) -->
+    <div id="confirm-modal" class="modal-backdrop" style="display: none;">
+        <div class="modal-box" style="max-width: 440px; text-align: center;">
+            <h3 id="confirm-modal-title" style="margin-bottom: 0.75rem;">Confirm Action</h3>
+            <p id="confirm-modal-message"
+                style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem; line-height: 1.5;"></p>
+            <div style="display: flex; justify-content: center; gap: 0.75rem;">
+                <button type="button" class="btn btn-secondary" onclick="closeConfirmModal()">Cancel</button>
+                <button type="button" id="confirm-modal-btn" class="btn btn-danger">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 4: View Receipt Details -->
+    <div id="receipt-modal" class="modal-backdrop" style="display: none;">
+        <div class="modal-box" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 id="receipt-modal-title">Receipt Details</h3>
+                <button class="modal-close" onclick="closeReceiptModal()">&times;</button>
+            </div>
+            <div id="receipt-modal-content" class="receipt-body">
+                <!-- Rendered dynamically -->
+            </div>
+            <div class="modal-actions" style="margin-top: 1.25rem;">
+                <button type="button" class="btn btn-secondary" onclick="closeReceiptModal()">Close</button>
+                <button type="button" class="btn btn-primary" onclick="printReceiptContent()">Print Receipt</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating AI Store Assistant Widget (Bottom-Right Fixed Position) -->
+    <div id="ai-chat-widget" class="ai-chat-widget">
+        <!-- Floating Trigger Button -->
+        <button id="ai-chat-trigger" class="ai-chat-trigger-btn" onclick="toggleAiChatWindow()"
+            aria-label="Ask AI Assistant">
+            <span class="trigger-status-dot"></span>
+            <span class="trigger-label">Ask AI</span>
+        </button>
+
+        <!-- Floating Chat Popup Window (Initially Hidden) -->
+        <div id="ai-chat-popup" class="ai-chat-popup" style="display: none;">
+            <div class="ai-chat-popup-header">
+                <div class="ai-chat-popup-title">
+                    <strong>AI Store Assistant</strong>
+                    <span class="badge badge-success status-pill">Online</span>
+                </div>
+                <div class="ai-chat-popup-actions">
+                    <button type="button" class="btn-icon-subtle" onclick="clearAiChat()"
+                        title="Clear chat history">Clear</button>
+                    <button type="button" class="btn-icon-close" onclick="toggleAiChatWindow()"
+                        title="Close chat">&times;</button>
+                </div>
+            </div>
+
+
+
+            <!-- Chat Messages Scroll Container -->
+            <div class="ai-chat-messages-compact" id="ai-chat-messages">
+                <div class="chat-message bot">
+                    <div class="chat-bubble">
+                        <p>Hello! I am your AI Store Assistant.</p>
+                        <p style="margin-top: 0.35rem; font-size: 0.85rem; color: var(--text-muted);">Ask any question
+                            about sales, inventory, profits, or products.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input Row -->
+            <form id="ai-chat-form" class="ai-chat-popup-input-row" onsubmit="handleSendAiMessage(event)">
+                <input type="text" id="ai-chat-input" placeholder="Ask about sales, stock, profit..." autocomplete="off"
+                    required>
+                <button type="submit" id="ai-chat-submit-btn" class="btn btn-primary btn-sm">
+                    Send
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js?v=13"></script>
+</body>
+
+</html>
