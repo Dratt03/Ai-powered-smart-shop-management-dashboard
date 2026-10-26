@@ -11,9 +11,7 @@ Built with **FastAPI**, **PostgreSQL**, **SQLAlchemy**, and Vanilla **HTML/CSS/J
 - **Store Overview & Analytics Recap**: Real-time sales metrics, revenue, daily bill counts, top-selling products, and low-stock alerts.
 - **Stock Management**: Add products, track live quantities, record stock movements (deliveries or damaged/expired items), and archive discontinued items.
 - **POS Billing & Customer Receipts**: Quick product lookup by code (e.g., `CC`), live total calculation, bill generation, and printable receipts.
-- **Floating "Ask AI" Assistant**: Fixed bottom-right chatbot powered by **Google Gemini 3.5 Flash** providing live inventory analysis, restock suggestions, and revenue insights.
-- **Zero-Emoji Design**: Clean typography with Indian Rupee (`₹`) support.
-- **In-App Gemini Configuration**: Easily update and test your Gemini API Key directly from the UI with automatic `.env` synchronization.
+- **Floating "Ask AI" Assistant**: Fixed bottom-right chatbot powered by **Google Gemini** providing live inventory analysis, restock and business suggestions, and revenue insights.
 
 ---
 
@@ -23,8 +21,8 @@ Run the entire application (FastAPI backend + PostgreSQL database) with a single
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/AI_Dashboard.git
-cd AI_Dashboard
+git clone https://github.com/Dratt03/Ai-powered-smart-shop-management-dashboard.git
+cd Smart_Dashboard
 ```
 
 ### 2. Prepare Environment File
